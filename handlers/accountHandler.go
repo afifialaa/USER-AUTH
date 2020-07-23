@@ -93,9 +93,7 @@ func SignupHandle(w http.ResponseWriter, r *http.Request) {
 
 		saved := database.SaveUser(&user)
 		if !saved {
-			fmt.Println("#signupHandle user was not saved")
 			w.Header().Set("Content-Type", "application/json")
-
 			data := map[string]string{"msg": "user was not created"}
 			json.NewEncoder(w).Encode(data)
 			return
@@ -103,7 +101,6 @@ func SignupHandle(w http.ResponseWriter, r *http.Request) {
 
 		// Generate token
 		token := auth.GenerateToken(user.Email)
-
 		// Generate json
 		data := map[string]string{"msg": "saved user", "token": token}
 
@@ -118,12 +115,6 @@ func SignupHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestHandle(w http.ResponseWriter, r *http.Request) {
-	// get token from request
-	// if exists -> validate
-	// else -> send response indicating failure
-	// validate token
-	// if valid -> send response indicating success
-	// else -> send reponse indicating failure
 
 	var token string = auth.GetToken(r)
 	// No token found
@@ -131,21 +122,24 @@ func TestHandle(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		data := map[string]string{"msg": "token was not found"}
 		json.NewEncoder(w).Encode(data)
+		return
 	}
 
 	// Validate token
-	validToken := auth.ValidateToken(token)
+	validToken := auth.Test(token)
 
 	// Not a valid token
 	if !validToken {
 		w.Header().Set("Content-Type", "application/json")
 		data := map[string]string{"msg": "invalid token"}
 		json.NewEncoder(w).Encode(data)
+		return
 	} else {
 		// Serve the user
 		w.Header().Set("Content-Type", "application/json")
 		data := map[string]string{"msg": "token was valid and user was served"}
 		json.NewEncoder(w).Encode(data)
+		return
 	}
 
 }

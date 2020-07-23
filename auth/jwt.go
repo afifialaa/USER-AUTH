@@ -31,17 +31,16 @@ func GenerateToken(email string) string {
 
 // Get token from request
 func GetToken(r *http.Request) string {
+	bearerToken := r.Header.Get("Authorization")
 
-	reqToken := r.Header.Get("Authorization")
-	splitToken := strings.Split(reqToken, "Bearer ")
-	reqToken = splitToken[1]
+	strArr := strings.Split(bearerToken, " ")
 
-	if reqToken != "" {
-		fmt.Println("#Gettoken -> token from request is: ", reqToken)
-		return reqToken
+	if len(strArr) == 2 {
+		return strArr[1]
+	} else {
+		return ""
 	}
 
-	return ""
 }
 
 // Validate token
@@ -60,6 +59,7 @@ func ValidateToken(tokenString string) bool {
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 
+	fmt.Println(claims["email"])
 	if ok {
 		var loggedUser string = session.GetLoggedUser()
 		if claims["email"] == loggedUser {
@@ -73,4 +73,39 @@ func ValidateToken(tokenString string) bool {
 		return false
 	}
 
+}
+
+func VerifyToken(tokenString string) bool {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		//Make sure that the token method conform to "SigningMethodHMAC"
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte("secret key"), nil
+	})
+	fmt.Println(token.email)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+
+func Test(tokenString string) bool {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return hmacSampleSecret, nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		fmt.Println(claims["email"])
+		return true
+	} else {
+		fmt.Println(err)
+		return false
+	}
 }

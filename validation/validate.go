@@ -5,30 +5,24 @@ import (
 	"regexp"
 
 	"github.com/afifialaa/USER-AUTH/helpers"
+	"github.com/afifialaa/USER-AUTH/models"
 )
-
-type User_type struct {
-	FirstName string
-	LastName  string
-	Email     string
-	Password  string
-}
 
 type User_login_type struct {
 	Email    string
 	Password string
 }
 
-func ValidateUser(user *User_type) bool {
+func ValidateUser(user *models.User) bool {
 
 	//empty fields
-	if user.FirstName == "" || user.LastName == "" || user.Email == "" || user.Password == "" {
+	if user.Email == "" || user.Password == "" {
 		fmt.Println("empyty fields")
 		return false
 	}
 
 	//empty field
-	if len(user.FirstName) == 0 || len(user.LastName) == 0 || len(user.Email) == 0 || len(user.Password) == 0 {
+	if len(user.Email) == 0 || len(user.Password) == 0 {
 		fmt.Println("empty fields")
 
 		return false
@@ -46,7 +40,7 @@ func ValidateUser(user *User_type) bool {
 	return true
 }
 
-func ValidateUserLogin(user *User_login_type) bool {
+func ValidateUserLogin(user *models.User) bool {
 	return true
 }
 

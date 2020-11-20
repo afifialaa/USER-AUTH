@@ -7,24 +7,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/afifialaa/USER-AUTH/validation"
+	"github.com/afifialaa/USER-AUTH/models"
+	"github.com/afifialaa/USER-AUTH/secrets"
 
 	"context"
 	"fmt"
 	"log"
 )
 
-type UserType struct {
-	firstName string
-	lastName  string
-	email     string
-	password  string
-}
-
 var userCollection *mongo.Collection
 
 func Connect() {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI(secrets.MongoCloud())
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -44,14 +38,29 @@ func Connect() {
 
 	// Set database and collection
 	userCollection = client.Database("private").Collection("users")
+
+	// Create index
+	_, err = userCollection.Indexes().CreateOne(
+		context.Background(),
+		mongo.IndexModel{
+			Keys: bson.M{
+				"email": 1,
+			},
+			Options: options.Index().SetUnique(true),
+		},
+	)
+	if err != nil {
+		fmt.Println("Email field is not unique")
+		log.Fatal(err)
+	}
 }
 
 // Insert new user
-func SaveUser(user *validation.User_type) bool {
+func SaveUser(user *models.User) bool {
 	insertResult, err := userCollection.InsertOne(context.TODO(), user)
 	if err != nil {
 		if IsDup(err) {
-			fmt.Println("Duplicate keys")
+			fmt.Println("Duplicate index")
 			return false
 		}
 		fmt.Println("mongodb error ", err.Error())
@@ -76,8 +85,8 @@ func IsDup(err error) bool {
 	return false
 }
 
-func FindUser(user *validation.User_login_type) bool {
-	var result validation.User_type
+func FindUser(user *models.User) bool {
+	var result models.User
 
 	filter := bson.D{{"email", user.Email}}
 	err := userCollection.FindOne(context.TODO(), filter).Decode(&result)

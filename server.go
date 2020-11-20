@@ -16,7 +16,7 @@ func main() {
 	database.Connect()
 
 	// routes
-	http.HandleFunc("/user/signup", handlers.SignupHandle)
+	http.HandleFunc("/user/createUser", handlers.SignupHandle)
 	http.HandleFunc("/user/signin", handlers.LoginHandle)
 	http.HandleFunc("/api/service/test", handlers.TestHandle)
 

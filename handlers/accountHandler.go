@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/afifialaa/USER-AUTH/auth"
 	database "github.com/afifialaa/USER-AUTH/database"
+	"github.com/afifialaa/USER-AUTH/models"
 	session "github.com/afifialaa/USER-AUTH/sessions"
 	"github.com/afifialaa/USER-AUTH/validation"
 
@@ -11,19 +12,12 @@ import (
 	"net/http"
 )
 
-type user_type struct {
-	firstName string
-	lastName  string
-	email     string
-	password  string
-}
-
 // Login handle
 func LoginHandle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "*")
 
-	user := validation.User_login_type{
+	user := models.User{
 		r.FormValue("email"),
 		r.FormValue("password"),
 	}
@@ -79,9 +73,7 @@ func SignupHandle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "*")
 
-	user := validation.User_type{
-		r.FormValue("firstName"),
-		r.FormValue("lastName"),
+	user := models.User{
 		r.FormValue("email"),
 		r.FormValue("password"),
 	}
@@ -94,7 +86,7 @@ func SignupHandle(w http.ResponseWriter, r *http.Request) {
 		saved := database.SaveUser(&user)
 		if !saved {
 			w.Header().Set("Content-Type", "application/json")
-			data := map[string]string{"msg": "user was not created"}
+			data := map[string]string{"err": "failed to create user"}
 			json.NewEncoder(w).Encode(data)
 			return
 		}
@@ -109,7 +101,7 @@ func SignupHandle(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.Header().Set("Content-Type", "application/json")
 
-		data := map[string]string{"msg": "user was not created"}
+		data := map[string]string{"err": "user was not created"}
 		json.NewEncoder(w).Encode(data)
 	}
 }
@@ -120,18 +112,18 @@ func TestHandle(w http.ResponseWriter, r *http.Request) {
 	// No token found
 	if token == "" {
 		w.Header().Set("Content-Type", "application/json")
-		data := map[string]string{"msg": "token was not found"}
+		data := map[string]string{"err": "token was not found"}
 		json.NewEncoder(w).Encode(data)
 		return
 	}
 
 	// Validate token
-	validToken := auth.Test(token)
+	validToken := auth.VerifyToken(token)
 
 	// Not a valid token
 	if !validToken {
 		w.Header().Set("Content-Type", "application/json")
-		data := map[string]string{"msg": "invalid token"}
+		data := map[string]string{"err": "invalid token"}
 		json.NewEncoder(w).Encode(data)
 		return
 	} else {

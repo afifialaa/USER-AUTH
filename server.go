@@ -13,11 +13,11 @@ type Status struct {
 }
 
 func main() {
-	database.Connect()
+	database.MongoConnect()
 
 	// routes
-	http.HandleFunc("/user/createUser", handlers.SignupHandle)
-	http.HandleFunc("/user/signin", handlers.LoginHandle)
+	http.HandleFunc("/user/createUser", handlers.Signup)
+	http.HandleFunc("/user/signin", handlers.Login)
 	http.HandleFunc("/api/service/test", handlers.TestHandle)
 
 	// listening for requests

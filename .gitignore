@@ -5,6 +5,11 @@
 *.so
 *.dylib
 
+
+# Secrets
+/secrets
+secrets.go
+
 # Test binary, built with `go test -c`
 *.test
 

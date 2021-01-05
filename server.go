@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	database "github.com/afifialaa/USER-AUTH/database"
@@ -13,15 +14,18 @@ type Status struct {
 }
 
 func main() {
-	database.MongoConnect()
 
 	// routes
 	http.HandleFunc("/user/createUser", handlers.Signup)
-	http.HandleFunc("/user/signin", handlers.Login)
-	http.HandleFunc("/api/service/test", handlers.TestHandle)
+	http.HandleFunc("/user/login", handlers.Login)
+	http.HandleFunc("/api/service", handlers.TestHandle)
+	database.Connect()
 
 	// listening for requests
 	fmt.Println("server is running")
-	http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }

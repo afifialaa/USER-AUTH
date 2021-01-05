@@ -13,12 +13,13 @@ import (
 
 // Login handle
 func Login(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("logging user in")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "*")
 
 	user := models.User{
-		email:    r.FormValue("email"),
-		password: r.FormValue("password"),
+		Email:    r.FormValue("email"),
+		Password: r.FormValue("password"),
 	}
 
 	// Validate user
@@ -59,6 +60,7 @@ func SignoutHandle(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("session was ended")
 }
 
+/* Create a new user */
 func Signup(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("#Signup_handle")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -69,7 +71,8 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		r.FormValue("password"),
 	}
 
-	valid := validation.ValidateUser(&user)
+	// valid := validation.ValidateUser(&user)
+	valid := true
 	if valid {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
@@ -93,6 +96,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+/* Test endpoint */
 func TestHandle(w http.ResponseWriter, r *http.Request) {
 
 	var token string = auth.GetToken(r)

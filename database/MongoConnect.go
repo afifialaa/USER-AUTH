@@ -34,10 +34,10 @@ func Connect() {
 	fmt.Println("Connected to MongoDB!")
 
 	// Set database and collection
-	userCollection = client.Database("private").Collection("users")
+	UserCollection = client.Database("private").Collection("users")
 
 	// Create index
-	_, err = userCollection.Indexes().CreateOne(
+	_, err = UserCollection.Indexes().CreateOne(
 		context.Background(),
 		mongo.IndexModel{
 			Keys: bson.M{

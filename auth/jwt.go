@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	session "github.com/afifialaa/USER-AUTH/sessions"
+	session "github.com/afifialaa/user-auth/sessions"
 	"github.com/dgrijalva/jwt-go"
 )
 

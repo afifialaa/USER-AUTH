@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/afifialaa/USER-AUTH/database"
+	"github.com/afifialaa/user-auth/database"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )

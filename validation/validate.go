@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/afifialaa/USER-AUTH/helpers"
-	"github.com/afifialaa/USER-AUTH/models"
+	"github.com/afifialaa/user-auth/helpers"
+	"github.com/afifialaa/user-auth/models"
 )
 
 type User_login_type struct {

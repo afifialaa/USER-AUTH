@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	database "github.com/afifialaa/USER-AUTH/database"
-	"github.com/afifialaa/USER-AUTH/handlers"
+	database "github.com/afifialaa/user-auth/database"
+	"github.com/afifialaa/user-auth/handlers"
 )
 
 type Status struct {

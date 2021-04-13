@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"github.com/afifialaa/USER-AUTH/auth"
-	"github.com/afifialaa/USER-AUTH/models"
-	session "github.com/afifialaa/USER-AUTH/sessions"
-	"github.com/afifialaa/USER-AUTH/validation"
+	"github.com/afifialaa/user-auth/auth"
+	"github.com/afifialaa/user-auth/models"
+	session "github.com/afifialaa/user-auth/sessions"
+	"github.com/afifialaa/user-auth/validation"
 
 	"encoding/json"
 	"fmt"

@@ -19,8 +19,8 @@ go get
 
 | Action  | Method  | URL |
 | -------------  | ------------- | ------------- |
-| [Login](##login) | POST  | /api/user/login  |
-| [Signup](##signup)  | POST  | /api/user/signup  |
+| [Login](#login) | POST  | /api/user/login  |
+| [Signup](#signup)  | POST  | /api/user/signup  |
 
 ## Login
 ### Request

@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/afifialaa/user-auth/config"
 	database "github.com/afifialaa/user-auth/database"
 	"github.com/afifialaa/user-auth/handlers"
 )
@@ -15,10 +16,11 @@ type Status struct {
 
 func main() {
 
+	config.SetEnv()
+
 	// routes
-	http.HandleFunc("/user/createUser", handlers.Signup)
-	http.HandleFunc("/user/login", handlers.Login)
-	http.HandleFunc("/api/service", handlers.TestHandle)
+	http.HandleFunc("api/user/signup", handlers.Signup)
+	http.HandleFunc("api/user/login", handlers.Login)
 	database.Connect()
 
 	// listening for requests

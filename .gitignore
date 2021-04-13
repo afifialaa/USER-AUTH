@@ -10,6 +10,8 @@
 /secrets
 secrets.go
 
+env.go
+
 # Test binary, built with `go test -c`
 *.test
 

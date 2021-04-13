@@ -1,11 +1,11 @@
 package database
 
 import (
+	"os"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-
-	"github.com/afifialaa/USER-AUTH/secrets"
 
 	"context"
 	"fmt"
@@ -15,7 +15,7 @@ import (
 var UserCollection *mongo.Collection
 
 func Connect() {
-	clientOptions := options.Client().ApplyURI(secrets.MongoCloud())
+	clientOptions := options.Client().ApplyURI(os.Getenv("MONGO_LOCAL"))
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)

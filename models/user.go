@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"log"
 
 	"github.com/afifialaa/user-auth/database"
 	"go.mongodb.org/mongo-driver/bson"
@@ -52,13 +51,13 @@ func (u User) Update() (*mongo.UpdateResult, error) {
 }
 
 // Find user
-func (u User) Find() (bson.M, error) {
-	var result bson.M
-	err := database.UserCollection.FindOne(context.TODO(), u).Decode(&result)
+func (u User) Find() (*User, error) {
+	var user User
+	filter := bson.M{"email": u.Email, "password": u.Password}
+
+	err := database.UserCollection.FindOne(context.TODO(), filter).Decode(&user)
 	if err != nil {
-		log.Fatal(err)
 		return nil, err
 	}
-
-	return result, nil
+	return &user, nil
 }

@@ -13,44 +13,39 @@ import (
 
 // Login handle
 func Login(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("logging user in")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "*")
+	w.Header().Set("Content-Type", "application/json")
 
 	user := models.User{
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
 	}
 
-	// Validate user
 	validUser := validation.ValidateUserLogin(&user)
 	if !validUser {
-		// Send failed response
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusUnauthorized)
-		data := map[string]string{"msg": "not a valid user input"}
+		data := map[string]string{"msg": "Unauthorized user"}
 		json.NewEncoder(w).Encode(data)
 		return
 
 	}
 
 	_, err := user.Find()
-	// User was not found
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
 
-		data := map[string]string{"msg": "user was not found"}
+		w.WriteHeader(http.StatusNotFound)
+		data := map[string]string{"msg": "User was not found"}
 		json.NewEncoder(w).Encode(data)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	// Store email
-	session.Start(user.Email)
-	// Create token
+	// session.Start(user.Email)
+
+	// Generate token
 	token := auth.GenerateToken(user.Email)
-	data := map[string]string{"msg": "user found", "token": token}
+
+	w.WriteHeader(http.StatusOK)
+	data := map[string]string{"token": token}
 	json.NewEncoder(w).Encode(data)
 	return
 }
@@ -62,9 +57,7 @@ func SignoutHandle(w http.ResponseWriter, r *http.Request) {
 
 /* Create a new user */
 func Signup(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("#Signup_handle")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "*")
 
 	user := models.User{
 		r.FormValue("email"),
@@ -73,23 +66,27 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 
 	// valid := validation.ValidateUser(&user)
 	valid := true
+	w.Header().Set("Content-Type", "application/json")
 	if valid {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
 
 		_, err := user.Create()
 		if err != nil {
-			w.Header().Set("Content-Type", "application/json")
-			data := map[string]string{"err": "failed to create user"}
+
+			// Email already in use
+			w.WriteHeader(http.StatusBadRequest)
+			data := map[string]string{"err": "Failed to create user"}
 			json.NewEncoder(w).Encode(data)
 			return
 		}
 
-		// Generate token -> not need to generate token
-		data := map[string]string{"msg": "user was created successfully"}
+		// Valid user
+		w.WriteHeader(http.StatusCreated)
+		data := map[string]string{"msg": "User was created successfully"}
 		json.NewEncoder(w).Encode(data)
 	} else {
-		w.Header().Set("Content-Type", "application/json")
+
+		// Not a valid input
+		w.WriteHeader(http.StatusBadRequest)
 		data := map[string]string{"err": "Not a valid user"}
 		json.NewEncoder(w).Encode(data)
 		return

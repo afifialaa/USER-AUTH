@@ -13,7 +13,6 @@ import (
 func GenerateToken(email string) string {
 	secretKey := []byte("secret key")
 
-	fmt.Println("#generate token")
 	// Create a token object
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email": email,
